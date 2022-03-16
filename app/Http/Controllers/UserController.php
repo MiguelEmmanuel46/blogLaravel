@@ -17,31 +17,35 @@ class UserController extends Controller
         $params = json_decode($json);
         $params_array = json_decode($json,true);     
         
-        //limpiar datos
-        $params_array = array_map('trim',$params_array);
-        
-        //validar datos
-        $validate = \Validator::make($params_array,[
-            'name' => 'required|alpha',
-            'surname' => 'required|alpha',
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        if ($validate->fails()) {
-            $data = array(
-                'status' => 'error',
-                'code' =>   404,
-                'message' => 'El usuario no se creo',
-                'errors' => $validate->errors()
-            );            
-        }else{
+        if (!empty($params) && !empty($params_array)) {
+
+
+            //limpiar datos
+            $params_array = array_map('trim', $params_array);
+
+            //validar datos   
+            $validate = \Validator::make($params_array, [
+                        'name' => 'required|alpha',
+                        'surname' => 'required|alpha',
+                        'email' => 'required|email',
+                        'password' => 'required',
+            ]);
+            if ($validate->fails()) {
+                $data = array(
+                    'status' => 'error',
+                    'code' => 404,
+                    'message' => 'El usuario no se creo',
+                    'errors' => $validate->errors()
+                );
+            } else {
                 $data = array(
                     'status' => 'success',
                     'code' => 200,
                     'message' => 'El usuario se creo correctamente'
                 );
+            }
         }
-        
+
         //cifrar el password
         
         //comprobar si el usuario existe
